@@ -7,6 +7,16 @@ let coursesData = [];
 $(document).ready(function() {
     loadCourses();
     
+    $('#createCourseBtn').on('click', function() {
+        openModal('createCourseModal');
+        $('#createCourseForm')[0].reset();
+    });
+    
+    $('#createCourseForm').on('submit', function(e) {
+        e.preventDefault();
+        createCourse();
+    });
+    
     $('#createSessionBtn').on('click', function() {
         openModal('createSessionModal');
         loadCoursesForSession();
@@ -28,7 +38,49 @@ $(document).ready(function() {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     $('#sessionTime').val(`${hours}:${minutes}`);
+    
+    // Close modals when clicking outside
+    $('.modal').on('click', function(e) {
+        if ($(e.target).is('.modal')) {
+            closeModal($(this).attr('id'));
+        }
+    });
+    
+    // Close modals with X button
+    $('.close').on('click', function() {
+        const modalId = $(this).closest('.modal').attr('id');
+        closeModal(modalId);
+    });
 });
+
+function createCourse() {
+    const code = $('#courseCode').val().trim();
+    const name = $('#courseName').val().trim();
+    
+    if (!code || !name) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    apiCall('courses.php', 'POST', {
+        code: code,
+        name: name
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Course created successfully!');
+            closeModal('createCourseModal');
+            $('#createCourseForm')[0].reset();
+            // Reload courses list
+            loadCourses();
+        } else {
+            alert('Failed to create course: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+}
 
 function loadCourses() {
     apiCall('courses.php')
@@ -50,24 +102,30 @@ function displayCourses(courses) {
     container.empty();
     
     if (courses.length === 0) {
-        container.html('<p>No courses found. Please contact administrator to add courses.</p>');
+        container.html('<p style="color: #6c757d; font-size: 0.95rem; padding: 20px; text-align: center;">No courses found. Click "Create New Course" to add your first course.</p>');
         return;
     }
     
     courses.forEach(course => {
         const card = $(`
             <div class="course-card">
-                <h3>${course.name}</h3>
-                <p><strong>Code:</strong> ${course.code}</p>
+                <h3>${escapeHtml(course.name)}</h3>
+                <p><strong>Code:</strong> ${escapeHtml(course.code)}</p>
                 <p><strong>Students:</strong> ${course.student_count || 0}</p>
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <button class="btn btn-primary" onclick="viewSessions(${course.id})">View Sessions</button>
-                    <button class="btn btn-secondary" onclick="viewSummary(${course.id})">View Summary</button>
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-sm" onclick="viewSessions(${course.id})">View Sessions</button>
+                    <button class="btn btn-secondary btn-sm" onclick="viewSummary(${course.id})">View Summary</button>
                 </div>
             </div>
         `);
         container.append(card);
     });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function loadCoursesForSession() {

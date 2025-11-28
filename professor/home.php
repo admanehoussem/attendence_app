@@ -25,10 +25,33 @@ $user = getCurrentUser();
     <div class="container">
         <div class="management-header">
             <h1>My Courses</h1>
-            <button id="createSessionBtn" class="btn btn-primary">Create New Session</button>
+            <div class="action-buttons">
+                <button id="createCourseBtn" class="btn btn-primary">Create New Course</button>
+                <button id="createSessionBtn" class="btn btn-secondary">Create New Session</button>
+            </div>
         </div>
         <div id="coursesList" class="courses-grid">
             <!-- Courses will be loaded here -->
+        </div>
+    </div>
+    
+    <!-- Create Course Modal -->
+    <div id="createCourseModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Course</h2>
+            <form id="createCourseForm">
+                <div class="form-group">
+                    <label for="courseCode">Course Code</label>
+                    <input type="text" id="courseCode" name="code" required placeholder="e.g., CS101">
+                </div>
+                <div class="form-group">
+                    <label for="courseName">Course Name</label>
+                    <input type="text" id="courseName" name="name" required placeholder="e.g., Introduction to Computer Science">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Course</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('createCourseModal')" style="margin-left: 10px;">Cancel</button>
+            </form>
         </div>
     </div>
     
@@ -59,6 +82,7 @@ $user = getCurrentUser();
                     <input type="time" id="sessionTime" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Session</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('createSessionModal')" style="margin-left: 10px;">Cancel</button>
             </form>
         </div>
     </div>

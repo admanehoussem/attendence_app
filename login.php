@@ -6,7 +6,7 @@
     <title>Login - Attendance Management System</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="login-page">
     <div class="login-container">
         <div class="login-box">
             <h1>Attendance Management System</h1>

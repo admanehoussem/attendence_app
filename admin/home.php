@@ -11,7 +11,7 @@ $user = getCurrentUser();
     <title>Admin Home - Attendance System</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
+<body class="admin-body">
     <nav class="navbar">
         <div class="nav-container">
             <h2>Administrator Dashboard</h2>
@@ -27,6 +27,10 @@ $user = getCurrentUser();
             <a href="statistics.php" class="admin-card">
                 <h3>Statistics</h3>
                 <p>View system statistics and reports</p>
+            </a>
+            <a href="courses.php" class="admin-card">
+                <h3>Course Management</h3>
+                <p>View all courses in the system</p>
             </a>
             <a href="students.php" class="admin-card">
                 <h3>Student Management</h3>
